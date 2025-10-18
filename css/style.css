@@ -615,65 +615,22 @@ main > section#distros {
   padding-top: 16px;
 }
 
-/* Improved mobile hamburger menu overlay */
+/* Vertical navbar on mobile */
 @media (max-width: 991.98px) {
-  .navbar-collapse {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: 1040;
-    transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
-    overflow-y: auto;
-    padding-top: 70px; /* Space for fixed navbar */
-    direction: rtl; /* Ensure RTL */
-  }
-
-  .navbar-collapse.show {
-    transform: translateX(0);
-  }
-
   .navbar-collapse.show .navbar-nav {
     flex-direction: column !important;
     align-items: center;
     width: 100%;
-    gap: 0;
-    padding: 1rem;
   }
-
   .navbar-collapse.show .nav-item {
     width: 100%;
-    max-width: 300px;
     text-align: center;
-    margin-bottom: 0;
+    margin-bottom: 0.5rem;
   }
-
   .navbar-collapse.show .nav-link {
     width: 100%;
     justify-content: center;
-    padding: 1rem;
-    min-height: 48px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: background 0.2s ease;
-  }
-
-  .navbar-collapse.show .nav-link:hover {
-    background: rgba(0, 212, 255, 0.1);
-  }
-
-  .navbar-toggler {
-    min-height: 48px;
-    min-width: 48px;
-    padding: 0.5rem;
-  }
-
-  /* Close on outside click - optional, handled by Bootstrap */
-  .navbar-collapse.show {
-    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5); /* Shadow for overlay */
+    padding: 0.75rem;
   }
 }
 
@@ -697,80 +654,5 @@ main > section#distros {
   .skeumorphic-button {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
-  }
-}
-
-/* Improved mobile hamburger menu overlay */
-@media (max-width: 991.98px) {
-  .navbar-collapse {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: 1040;
-    transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
-    overflow-y: auto;
-    padding-top: 70px; /* Space for fixed navbar */
-    direction: rtl; /* Ensure RTL */
-  }
-
-  .navbar-collapse.show {
-    transform: translateX(0);
-  }
-
-  .navbar-collapse.show .navbar-nav {
-    flex-direction: column !important;
-    align-items: center;
-    width: 100%;
-    gap: 0;
-    padding: 1rem;
-  }
-
-  .navbar-collapse.show .nav-item {
-    width: 100%;
-    max-width: 300px;
-    text-align: center;
-    margin-bottom: 0;
-  }
-
-  .navbar-collapse.show .nav-link {
-    width: 100%;
-    justify-content: center;
-    padding: 1rem;
-    min-height: 48px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: background 0.2s ease;
-  }
-
-  .navbar-collapse.show .nav-link:hover {
-    background: rgba(0, 212, 255, 0.1);
-  }
-
-  .navbar-toggler {
-    min-height: 48px;
-    min-width: 48px;
-    padding: 0.5rem;
-  }
-
-  /* Close on outside click - optional, handled by Bootstrap */
-  .navbar-collapse.show {
-    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5); /* Shadow for overlay */
-  }
-}
-
-/* Further adjustments for very small screens */
-@media (max-width: 480px) {
-  .navbar-collapse.show .nav-link {
-    padding: 0.75rem;
-    min-height: 44px;
-  }
-
-  .navbar-collapse.show .nav-link img {
-    width: 20px;
-    height: 20px;
   }
 }
