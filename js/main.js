@@ -200,7 +200,7 @@ function renderNewsCard(container, title, date, summary, link) {
     <div class="background-glow"></div>
 
     <div class="content-container">
-      <img src="Sea/apps/scalable/gnome-weather.svg" alt="News Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
+      <img src="Sea/apps/scalable/" alt="News Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
       <h3 class="text-xl font-semibold text-cyan-300 mb-2">${title}</h3>
       <p class="text-sm text-cyan-200 mb-2">${date}</p>
       <p class="text-sm text-blue-200 mb-4">${summary}</p>
@@ -290,7 +290,7 @@ function renderBsdCard(container, name, description, stars, forks, language, lin
     <div class="background-glow"></div>
 
     <div class="content-container">
-      <img src="Sea/apps/scalable/gnome-system-monitor.svg" alt="BSD Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
+      <img src="img/bsd.png" alt="BSD Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
       <h3 class="text-xl font-semibold text-cyan-300 mb-2">${name}</h3>
       <p class="text-sm text-blue-200 mb-2">${description}</p>
       <p class="text-sm text-cyan-200 mb-1">ستاره‌ها: ${stars} | فورک‌ها: ${forks}</p>
