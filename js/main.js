@@ -91,46 +91,28 @@ async function fetchData(originalUrl, containerId, loadingMessage, errorMessage,
     console.error("Fetch Error:", err);
     if (containerId === 'distros-container') {
       container.innerHTML = originalDistros;
-    } else if (containerId === 'weekly-container') {
-      container.innerHTML = originalWeekly;
     } else {
       container.innerHTML = `<p class="text-red-500">${errorMessage}: ${err.message}. لطفاً اتصال اینترنت خود را بررسی کنید یا صفحه را دوباره بارگذاری کنید.</p>`;
     }
   }
 }
 
-// Function to render distro card with ranking and right hits column
+// Function to render distro table row
 function renderCard(container, rank, name, hits) {
-  const card = document.createElement("div");
-  card.className = "card-container";
-  card.innerHTML = `
-    <div class="inner-container">
-      <div class="border-outer">
-        <div class="main-card"></div>
-      </div>
-      <div class="glow-layer-1"></div>
-      <div class="glow-layer-2"></div>
-    </div>
-
-    <div class="overlay-1"></div>
-    <div class="overlay-2"></div>
-    <div class="background-glow"></div>
-
-    <div class="content-container">
-      <img class=" card card-link " src="Sea/mimetypes/scalable/application-x-trash.svg" alt="Distro Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
-      <div class="flex justify-between items-center mb-4">
-        <span class="text-cyan-400 font-bold text-lg">#${rank}</span>
-        <h3 class="text-xl font-semibold text-cyan-300 flex-1 text-center mx-4">${name}</h3>
-        <p class="text-sm text-cyan-200 font-mono">بازدید: ${hits}</p>
-      </div>
-    </div>
+  if (rank === 1) name = '?';
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td class="text-center text-cyan-400 font-bold">#${rank}</td>
+    <td class="text-center text-cyan-300 font-semibold">${name}</td>
+    <td class="text-center text-cyan-200">${hits}</td>
   `;
-  container.appendChild(card);
+  container.appendChild(row);
 }
 
 // Process distros data
 function processDistros(doc, container) {
-  container.innerHTML = ''; // Clear container
+  container.innerHTML = '<thead><tr><th class="text-center text-cyan-400">رتبه</th><th class="text-center text-cyan-400">نام توزیع</th><th class="text-center text-cyan-400">بازدید</th></tr></thead><tbody></tbody>'; // Clear container and add header
+  const tbody = container.querySelector('tbody');
   const rows = doc.querySelectorAll("tr");
   console.log('Distros rows found:', rows.length);
   let cardCount = 0;
@@ -148,14 +130,14 @@ function processDistros(doc, container) {
       console.log(`Processing row ${index} (rank ${rank}): name="${name}", hits="${hits}"`);
       // Skip invalid rows: empty name, hits=0, hits=Infinity, or non-distro names
       if (name && name.length > 0 && hits > 0 && isFinite(hits) && !name.includes('Search') && !name.includes('DistroWatch Page Hit Ranking') && !name.includes('Page Hit Ranking Trends') && !name.includes('Last 12 months') && !name.includes('Trends') && name.length > 3 && name.match(/^[A-Z]/)) {
-        renderCard(container, cardCount + 1, name, hits); // Start rank from 1
+        renderCard(tbody, cardCount + 1, name, hits); // Start rank from 1
         cardCount++;
       }
     }
   });
   console.log('Total distros rendered:', cardCount);
   if (cardCount === 0) {
-    container.innerHTML = `<p class="text-red-500">هیچ داده‌ای یافت نشد. لطفاً صفحه را دوباره بارگذاری کنید.</p>`;
+    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-red-500">هیچ داده‌ای یافت نشد. لطفاً صفحه را دوباره بارگذاری کنید.</td></tr>`;
   }
 }
 // Translation function using LibreTranslate (free, async)
@@ -183,7 +165,7 @@ async function translateText( text, targetLang = 'fa') {
 }
 
 // Function to render news card
-function renderNewsCard(container, title, date, summary, link) {
+function renderNewsCard(container, title, date, summary, link, iconSrc = "Sea/apps/scalable/") {
   const card = document.createElement("div");
   card.className = "card-container";
   card.innerHTML = `
@@ -200,7 +182,7 @@ function renderNewsCard(container, title, date, summary, link) {
     <div class="background-glow"></div>
 
     <div class="content-container">
-      <img src="Sea/apps/scalable/" alt="News Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
+      <img src="${iconSrc}" alt="News Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
       <h3 class="text-xl font-semibold text-cyan-300 mb-2">${title}</h3>
       <p class="text-sm text-cyan-200 mb-2">${date}</p>
       <p class="text-sm text-blue-200 mb-4">${summary}</p>
@@ -354,7 +336,7 @@ async function processReviews(doc, container) {
       const translatedTitle = await translateToPersian(title);
       const translatedSummary = await translateToPersian(summary);
       const issueDate = date.replace(/-/g, '');
-      const link = "https://distrowatch.com/weekly.php?issue=" + issueDate;
+      const link = "https://distrowatch.com/ubuntu.php?issue=" + issueDate;
       renderReviewsCard(container, translatedTitle, author, date, translatedSummary + " (Source: " + link + ")", link);
       reviewCount++;
     }
@@ -440,63 +422,36 @@ function handleHashChange() {
   });
 }
 
-// Function to render weekly rankings card
-function renderWeeklyCard(container, rank, name, hits) {
-  const card = document.createElement("div");
-  card.className = "card-container";
-  card.innerHTML = `
-    <div class="inner-container">
-      <div class="border-outer">
-        <div class="main-card"></div>
-      </div>
-      <div class="glow-layer-1"></div>
-      <div class="glow-layer-2"></div>
-    </div>
 
-    <div class="overlay-1"></div>
-    <div class="overlay-2"></div>
-    <div class="background-glow"></div>
-
-    <div class="content-container">
-      <img src="Sea/apps/scalable/gnome-system-monitor.svg" alt="Weekly Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
-      <div class="flex justify-between items-center mb-4">
-        <span class="text-cyan-400 font-bold text-lg">#${rank}</span>
-        <h3 class="text-xl font-semibold text-cyan-300 flex-1 text-center mx-4">${name}</h3>
-        <p class="text-sm text-cyan-200 font-mono">هفته: ${hits}</p>
-      </div>
-    </div>
-  `;
-  container.appendChild(card);
-}
-
-// Process weekly rankings data
-function processWeekly(doc, container) {
-  container.innerHTML = ''; // Clear container
-  const rows = doc.querySelectorAll("tr");
-  console.log('Weekly rows found:', rows.length);
+// Process Ubuntu news RSS data (using JSON proxy)
+async function processUbuntuNews(data, container) {
+  const items = data.items || [];
+  console.log('Ubuntu news items found:', items.length);
+  container.innerHTML = '';
   let cardCount = 0;
-  rows.forEach((row, index) => {
-    if (index === 0) return; // Skip header row
-    if (cardCount >= 200) return; // Limit to 200 for performance
-    const cols = row.querySelectorAll("td, th"); // Include th for potential header-like rows
-    if (cols.length >= 3) {
-      const rankText = cols[0].textContent.trim();
-      const rank = parseInt(rankText.replace(/[^\d]/g, '')) || (cardCount + 1);
-      const nameElement = cols[1].querySelector('a');
-      const name = nameElement ? nameElement.textContent.trim() : cols[1].textContent.trim();
-      const hitsText = cols[2].textContent.trim();
-      const hits = parseInt(hitsText.replace(/[^\d]/g, '')) || 0;
-      console.log(`Processing weekly row ${index} (rank ${rank}): name="${name}", hits="${hits}"`);
-      // Skip invalid rows: empty name, hits=0, hits=Infinity, or non-distro names
-      if (name && name.length > 0 && hits > 0 && isFinite(hits) && !name.includes('Search') && !name.includes('DistroWatch Page Hit Ranking') && !name.includes('Page Hit Ranking Trends') && !name.includes('Last 12 months') && !name.includes('Trends') && name.length > 3 && name.match(/^[A-Z]/)) {
-        renderWeeklyCard(container, cardCount + 1, name, hits); // Start rank from 1
-        cardCount++;
+  for (const item of items) {
+    try {
+      const title = item.title || '';
+      const date = item.pubDate || new Date().toLocaleDateString('fa-IR');
+      let description = item.description || '';
+      if (description) {
+        description = description.replace(/<[^>]*>/g, ''); // Strip HTML
       }
+      const summary = description ? description.substring(0, 150) + '...' : 'خلاصه‌ای در دسترس نیست.';
+      const link = item.link || '#';
+      if (title && link !== '#') {
+        const translatedTitle = await translateToPersian(title);
+        const translatedSummary = await translateToPersian(summary);
+        renderNewsCard(container, translatedTitle, date, translatedSummary, link, "img/ubuntu-logo.png");
+        cardCount++;
+        if (cardCount >= 10) break; // Limit to 10 news
+      }
+    } catch (err) {
+      console.error('Error processing Ubuntu news item:', err);
     }
-  });
-  console.log('Total weekly rendered:', cardCount);
+  }
   if (cardCount === 0) {
-    container.innerHTML = `<p class="text-red-500">هیچ داده‌ای یافت نشد. لطفاً صفحه را دوباره بارگذاری کنید.</p>`;
+    container.innerHTML = '<p class="text-red-500">هیچ خبری یافت نشد.</p>';
   }
 }
 
@@ -755,19 +710,17 @@ async function processLinuxJournal(doc, container) {
 }
 
 let originalDistros = '';
-let originalWeekly = '';
 
 // Fetch data on page load
 document.addEventListener('DOMContentLoaded', async () => {
   originalDistros = document.getElementById('distros-container').innerHTML;
-  originalWeekly = document.getElementById('weekly-container').innerHTML;
+  originalubuntu = document.getElementById('ubuntu-container').innerHTML;
 
   const fetches = [
     fetchData('https://distrowatch.com/dwres.php?resource=popularity', 'distros-container', 'در حال بارگذاری توزیع‌ها...', 'خطا در دریافت داده‌ها', processDistros),
-    fetchData('https://distrowatch.com/dwres.php?resource=popularity&sort=week', 'weekly-container', 'در حال بارگذاری رتبه‌بندی هفتگی...', 'خطا در دریافت رتبه‌بندی هفتگی', processWeekly),
+    fetchData('https://api.rss2json.com/v1/api.json?rss_url=https://ubuntu.com/blog/feed', 'ubuntu-container', 'در حال بارگذاری اخبار اوبونتو...', 'خطا در دریافت اخبار اوبونتو', processUbuntuNews, "application/json"),
     fetchData('https://www.linux.com/feed', 'news-container', 'در حال بارگذاری اخبار...', 'خطا در دریافت اخبار', processNews, "text/xml"),
     fetchData('https://www.phoronix.com/rss.php', 'phoronix-container', 'در حال بارگذاری اخبار فنی...', 'خطا در دریافت اخبار فنی', processPhoronix, "text/xml"),
-    fetchData('https://www.reddit.com/r/linux/.rss', 'linuxcom-container', 'در حال بارگذاری اخبار عمومی...', 'خطا در دریافت اخبار عمومی', processLinuxCom, "text/xml"),
     fetchData('https://lwn.net/headlines/rss', 'lwn-container', 'در حال بارگذاری اخبار LWN...', 'خطا در دریافت اخبار LWN', processLWN, "text/xml"),
     fetchData('https://www.linuxjournal.com/node/feed', 'linuxjournal-container', 'در حال بارگذاری اخبار لینوکس ژورنال...', 'خطا در دریافت اخبار لینوکس ژورنال', processLinuxJournal, "text/xml"),
     fetchData('https://distrowatch.com/reviews/', 'reviews-container', 'در حال بارگذاری نقد و بررسی...', 'خطا در دریافت نقد و بررسی', processReviews),
@@ -785,7 +738,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setInterval(async () => {
     const updateFetches = [
       fetchData('https://distrowatch.com/dwres.php?resource=popularity', 'distros-container', 'در حال بارگذاری توزیع‌ها...', 'خطا در دریافت داده‌ها', processDistros),
-      fetchData('https://distrowatch.com/dwres.php?resource=popularity&sort=week', 'weekly-container', 'در حال بارگذاری رتبه‌بندی هفتگی...', 'خطا در دریافت رتبه‌بندی هفتگی', processWeekly),
+      fetchData('https://api.rss2json.com/v1/api.json?rss_url=https://ubuntu.com/blog/feed', 'ubuntu-container', 'در حال بارگذاری اخبار اوبونتو...', 'خطا در دریافت اخبار اوبونتو', processUbuntuNews, "application/json"),
       fetchData('https://www.linux.com/feed', 'news-container', 'در حال بارگذاری اخبار...', 'خطا در دریافت اخبار', processNews, "text/xml"),
       fetchData('https://www.phoronix.com/rss.php', 'phoronix-container', 'در حال بارگذاری اخبار فنی...', 'خطا در دریافت اخبار فنی', processPhoronix, "text/xml"),
       fetchData('https://distrowatch.com/reviews/', 'reviews-container', 'در حال بارگذاری نقد و بررسی...', 'خطا در دریافت نقد و بررسی', processReviews),
@@ -804,7 +757,7 @@ window.addEventListener('hashchange', handleHashChange);
 
 // Refresh buttons
 document.getElementById('refresh-distros').addEventListener('click', () => fetchData('https://distrowatch.com/dwres.php?resource=popularity', 'distros-container', 'در حال بارگذاری توزیع‌ها...', 'خطا در دریافت داده‌ها', processDistros));
-document.getElementById('refresh-weekly').addEventListener('click', () => fetchData('https://distrowatch.com/dwres.php?resource=popularity&sort=week', 'weekly-container', 'در حال بارگذاری رتبه‌بندی هفتگی...', 'خطا در دریافت رتبه‌بندی هفتگی', processWeekly));
+document.getElementById('refresh-ubuntu').addEventListener('click', () => fetchData('https://api.rss2json.com/v1/api.json?rss_url=https://ubuntu.com/blog/feed', 'ubuntu-container', 'در حال بارگذاری اخبار اوبونتو...', 'خطا در دریافت اخبار اوبونتو', processUbuntuNews, "application/json"));
 document.getElementById('refresh-news').addEventListener('click', () => fetchData('https://www.linux.com/feed', 'news-container', 'در حال بارگذاری اخبار...', 'خطا در دریافت اخبار', processNews, "text/xml"));
 document.getElementById('refresh-phoronix').addEventListener('click', () => fetchData('https://www.phoronix.com/rss.php', 'phoronix-container', 'در حال بارگذاری اخبار فنی...', 'خطا در دریافت اخبار فنی', processPhoronix, "text/xml"));
 document.getElementById('refresh-linuxcom').addEventListener('click', () => fetchData('https://www.reddit.com/r/linux/.rss', 'linuxcom-container', 'در حال بارگذاری اخبار عمومی...', 'خطا در دریافت اخبار عمومی', processLinuxCom, "text/xml"));

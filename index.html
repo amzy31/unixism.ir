@@ -10,7 +10,7 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon">  
   <title>یونیکسیزم - مرجع فارسی توزیع‌های لینوکس</title>
 </head>
-<body class="bg-black container">
+<body class="bg-black rounded-5 container">
   
   <header class="bg-gradient-to-r from-black via-gray-900 to-black shadow-2xl backdrop-blur-sm p-6 border-gray-700 border-b text-white text-center perspective-1000 transform rotateX-2">
 	  <div class="transform -rotateX-2"><br><br>
@@ -33,9 +33,9 @@
           </a>
         </li>
         <li class="mx-2 nav-item">
-          <a class="d-flex flex-column align-items-center hover:bg-gray-800/50 hover:shadow-cyan-500/50 px-3 py-2 rounded-md text-cyan-400 hover:text-cyan-200 hover:scale-110 transition-all duration-300 ease-in-out nav-link" href="#weekly">
-            <img src="Sea/apps/scalable/gnome-system-monitor.svg" width="32" height="32" alt="ubuntu-news" class="mb-1">
-            <span class="small">ubuntu-news</span>
+          <a class="d-flex flex-column align-items-center hover:bg-gray-800/50 hover:shadow-cyan-500/50 px-3 py-2 rounded-md text-cyan-400 hover:text-cyan-200 hover:scale-110 transition-all duration-300 ease-in-out nav-link" href="#ubuntu">
+            <img src="img/ubuntu-logo.png" width="32" height="32" alt="ubuntu-news" class="mb-1">
+            <span class="small">اخبار ubuntu</span>
           </a>
         </li>
         <li class="mx-2 nav-item">
@@ -79,24 +79,24 @@
   </div>
 </nav>
 <main class="bg-gradient-to-b from-black via-gray-900 to-black shadow-inner p-6 min-h-screen text-gray-100" style="padding-top: 120px;">
-  <section id="distros" class="mx-auto max-w-6xl skeumorphic-section">
+  <section id="distros" class="bg-dark mx-auto max-w-6xl skeumorphic-section">
     <h2 class="mb-6 font-bold text-cyan-400 text-2xl embossed-text">توزیع‌های محبوب</h2>
     <div class="flex items-center mb-4">
 
-      <button id="refresh-distros" class="bg-cyan-600 hover:bg-cyan-500 px-4 py-2 rounded text-white transition btn btn-primary skeumorphic-button">به‌روزرسانی رتبه‌بندی</button>
+      <button id="refresh-distros" class="bg-cyan-600 hover:bg-cyan-500 px-4 py-2 rounded text-white transition btn btn-primary skeumorphic-button">به‌روزرسانی  </button>
     </div>
-    <div id="distros-container" class="row g-4"></div>
+    <table id="distros-container" class="table table-dark table-hover table-striped"></table>
   </section>
 
-  <section id="weekly" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
+  <section id="ubuntu" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
     <h2 class="flex items-center gap-2 mb-6 font-bold text-blue-400 text-2xl embossed-text">
-      <img src="Sea/apps/scalable/gnome-system-monitor.svg" width="28" height="28" alt="رتبه‌بندی" class="theme-icon">
-      رتبه‌بندی
+      <img src="img/ubuntu-logo.png" width="28" height="28" alt=" اوبونتو" class="theme-icon">
+       اوبونتو
     </h2>
-    <button id="refresh-weekly" class="bg-blue-600 hover:bg-blue-500 mb-4 px-4 py-2 rounded-md text-white transition-all duration-200 ease-in-out btn btn-primary skeumorphic-button">
-      به‌روزرسانی رتبه‌بندی
+    <button id="refresh-ubuntu" class="bg-blue-600 hover:bg-blue-500 mb-4 px-4 py-2 rounded-md text-white transition-all duration-200 ease-in-out btn btn-primary skeumorphic-button">
+      به‌روزرسانی  اوبونتو
     </button>
-    <div id="weekly-container" class="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
+    <div id="ubuntu-container" class="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
   </section>
 
   <section id="news" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
