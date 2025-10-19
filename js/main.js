@@ -21,18 +21,18 @@ async function translateToPersian(text) {
   }
 }
 
-async function fetchWithTimeout(url, options = {}, timeout = 20000) {
+async function fetchWithTimeout (url, options = {}, timeout = 20000) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
   return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timeoutId));
 }
 
-async function fetchWithRetry(originalUrl, retries = 3) {
+async function fetchWithRetry (originalUrl, retries = 3) {
   let fetchOptions = {};
   if (originalUrl.includes('api.github.com')) {
     fetchOptions = {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4472.124 Safari/537.36'
       }
     };
   }
@@ -100,7 +100,7 @@ async function fetchData(originalUrl, containerId, loadingMessage, errorMessage,
 }
 
 // Function to render distro card with ranking and right hits column
-function renderCard(container, rank, name, hits) {
+renderCard = (container, rank, name, hits) => {
   const card = document.createElement("div");
   card.className = "card-container";
   card.innerHTML = `
@@ -129,14 +129,14 @@ function renderCard(container, rank, name, hits) {
 }
 
 // Process distros data
-function processDistros(doc, container) {
+const processDistros = (doc, container) => {
   container.innerHTML = ''; // Clear container
   const rows = doc.querySelectorAll("tr");
   console.log('Distros rows found:', rows.length);
   let cardCount = 0;
   rows.forEach((row, index) => {
     if (index === 0) return; // Skip header row
-    if (cardCount >= 200) return; // Limit to 200 for performance
+    if (cardCount >= 20) return; // Limit to 200 for performance
     const cols = row.querySelectorAll("td, th"); // Include th for potential header-like rows
     if (cols.length >= 3) {
       const rankText = cols[0].textContent.trim();
@@ -166,7 +166,7 @@ async function translateText( text, targetLang = 'fa') {
       method: 'POST',
       body: JSON.stringify({
         q: text,
-        source: 'en',
+        source: 'fa',
         target: targetLang,
         format: 'text'
       }),
@@ -184,6 +184,11 @@ async function translateText( text, targetLang = 'fa') {
 
 // Function to render news card
 function renderNewsCard(container, title, date, summary, link) {
+if (rank ===1) {
+    rank = '?';
+    text
+}
+
   const card = document.createElement("div");
   card.className = "card-container";
   card.innerHTML = `
@@ -200,7 +205,7 @@ function renderNewsCard(container, title, date, summary, link) {
     <div class="background-glow"></div>
 
     <div class="content-container">
-      <img src="Sea/apps/scalable/gnome-weather.svg" alt="News Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
+      <img src="Sea/apps/scalable/" alt="News Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
       <h3 class="text-xl font-semibold text-cyan-300 mb-2">${title}</h3>
       <p class="text-sm text-cyan-200 mb-2">${date}</p>
       <p class="text-sm text-blue-200 mb-4">${summary}</p>
@@ -290,7 +295,7 @@ function renderBsdCard(container, name, description, stars, forks, language, lin
     <div class="background-glow"></div>
 
     <div class="content-container">
-      <img src="Sea/apps/scalable/gnome-system-monitor.svg" alt="BSD Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
+      <img src="img/bsd.png" alt="BSD Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
       <h3 class="text-xl font-semibold text-cyan-300 mb-2">${name}</h3>
       <p class="text-sm text-blue-200 mb-2">${description}</p>
       <p class="text-sm text-cyan-200 mb-1">ستاره‌ها: ${stars} | فورک‌ها: ${forks}</p>
@@ -421,7 +426,7 @@ async function processRepos(repos, container) {
 }
 
 // Function for hash-based routing (SPA behavior)
-function handleHashChange() {
+const handleHashChange = () => {
   const hash = window.location.hash || '#distros';
   const sections = document.querySelectorAll('main > section');
   sections.forEach(section => {
@@ -815,3 +820,4 @@ document.getElementById('refresh-bsd').addEventListener('click', () => fetchData
 document.getElementById('refresh-repos').addEventListener('click', () => fetchData('https://api.github.com/search/repositories?q=linux&sort=stars&order=desc', 'repos-container', 'در حال بارگذاری مخازن...', 'خطا در دریافت مخازن', processRepos, "application/json"));
 
 // Dark mode toggle (removed as per user request)
+

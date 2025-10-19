@@ -14,13 +14,13 @@
   
   <header class="bg-gradient-to-r from-black via-gray-900 to-black shadow-2xl backdrop-blur-sm p-6 border-gray-700 border-b text-white text-center perspective-1000 transform rotateX-2">
     <div class="transform -rotateX-2">
-      <img class="d-sm-blockimg align-items-sm-center rounded g-sm-1 img img-thumbnail" style="width: 128px; margin: auto; padding-top: 13px;" src="img/logo.png" alt="logo">
+      <a href=""><img class="align-items-sm-center p-3 rounded d-sm-blockimg g-sm-1 img img-thumbnail" style="width: 128px; margin: auto; padding-top: 13px;" src="img/logo.png" alt="logo"></a>
       <h1 class="drop-shadow-lg p-0 font-extrabold text-cyan-300 text-4xl tracking-wide">یونیکسیزم</h1>
       <p class="drop-shadow-md mt-2 p-5 text-cyan-200 text-sm">مرجع فارسی توزیع‌های لینوکس و یونیکس  </p>
   </div>
 </header>
-<nav class="fixed-top bg-black shadow-lg backdrop-blur-md border-gray-600 border-b navbar navbar-expand-lg navbar-dark" style="background: rgba(0,0,0,0.9); z-index: 1030;">
-  <div class="container-fluid">
+<nav class="container fixed-bottom bg-black shadow-lg backdrop-blur-md border-gray-600 border-b navbar navbar-expand-lg navbar-dark" style="background: rgba(0,0,0,0.9); z-index: 1030;">
+  <div class="container-sm navbar-nav-scroll">
     <button class="bg-cyan-600 border-cyan-600 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -34,8 +34,8 @@
         </li>
         <li class="mx-2 nav-item">
           <a class="d-flex flex-column align-items-center hover:bg-gray-800/50 hover:shadow-cyan-500/50 px-3 py-2 rounded-md text-cyan-400 hover:text-cyan-200 hover:scale-110 transition-all duration-300 ease-in-out nav-link" href="#weekly">
-            <img src="Sea/apps/scalable/gnome-system-monitor.svg" width="32" height="32" alt="رتبه‌بندی هفتگی" class="mb-1">
-            <span class="small">رتبه‌بندی هفتگی</span>
+            <img src="Sea/apps/scalable/gnome-system-monitor.svg" width="32" height="32" alt="رتبه‌بندی" class="mb-1">
+            <span class="small">رتبه‌بندی</span>
           </a>
         </li>
         <li class="mx-2 nav-item">
@@ -89,63 +89,88 @@
   </section>
 
   <section id="weekly" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
-    <h2 class="mb-6 font-bold text-cyan-400 text-2xl embossed-text">رتبه‌بندی هفتگی</h2>
-    <button id="refresh-weekly" class="bg-cyan-600 hover:bg-cyan-500 mb-4 px-4 py-2 rounded text-white transition btn btn-primary texy-dark skeumorphic-button">به‌روزرسانی رتبه‌بندی هفتگی</button>
+    <h2 class="flex items-center gap-2 mb-6 font-bold text-blue-400 text-2xl embossed-text">
+      <img src="Sea/apps/scalable/gnome-system-monitor.svg" width="28" height="28" alt="رتبه‌بندی" class="theme-icon">
+      رتبه‌بندی
+    </h2>
+    <button id="refresh-weekly" class="bg-blue-600 hover:bg-blue-500 mb-4 px-4 py-2 rounded-md text-white transition-all duration-200 ease-in-out btn btn-primary skeumorphic-button">
+      به‌روزرسانی رتبه‌بندی
+    </button>
     <div id="weekly-container" class="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
   </section>
 
-  <section id="news" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
-    <h2 class="mb-6 font-bold text-cyan-400 text-2xl embossed-text">اخبار اخیر</h2>
-    <button id="refresh-news" class="bg-cyan-600 hover:bg-cyan-500 mb-4 px-4 py-2 rounded text-white transition btn btn-primary skeumorphic-button">به‌روزرسانی اخبار</button>
-    <div id="news-container" class="gap-6 grid grid-cols-1 md:grid-cols-2"></div>
-  </section>
-
   <section id="phoronix" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
-    <h2 class="mb-6 font-bold text-cyan-400 text-2xl embossed-text">اخبار فنی</h2>
-    <button id="refresh-phoronix" class="bg-cyan-600 hover:bg-cyan-500 mb-4 px-4 py-2 rounded text-white transition btn btn-primary skeumorphic-button">به‌روزرسانی اخبار فنی</button>
+    <h2 class="flex items-center gap-2 mb-6 font-bold text-blue-400 text-2xl embossed-text">
+      <img src="Sea/apps/scalable/atom.svg" width="28" height="28" alt="اخبار فنی" class="theme-icon">
+      اخبار فنی
+    </h2>
+    <button id="refresh-phoronix" class="bg-blue-600 hover:bg-blue-500 mb-4 px-4 py-2 rounded-md text-white transition-all duration-200 ease-in-out btn btn-primary skeumorphic-button">
+      به‌روزرسانی اخبار فنی
+    </button>
     <div id="phoronix-container" class="gap-6 grid grid-cols-1 md:grid-cols-2"></div>
   </section>
 
-  <section id="linuxcom" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
-    <h2 class="mb-6 font-bold text-cyan-400 text-2xl embossed-text">اخبار عمومی</h2>
-    <button id="refresh-linuxcom" class="bg-cyan-600 hover:bg-cyan-500 mb-4 px-4 py-2 rounded text-white transition btn btn-primary skeumorphic-button">به‌روزرسانی اخبار عمومی</button>
-    <div id="linuxcom-container" class="gap-6 grid grid-cols-1 md:grid-cols-2"></div>
-  </section> 
 
   <section id="lwn" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
-    <h2 class="mb-6 font-bold text-cyan-400 text-2xl embossed-text">اخبار LWN</h2>
-    <button id="refresh-lwn" class="bg-cyan-600 hover:bg-cyan-500 mb-4 px-4 py-2 rounded text-white transition skeumorphic-button">به‌روزرسانی اخبار LWN</button>
+    <h2 class="flex items-center gap-2 mb-6 font-bold text-blue-400 text-2xl embossed-text">
+      <img src="Sea/apps/scalable/geany.svg" width="28" height="28" alt="اخبار LWN" class="theme-icon">
+      اخبار LWN
+    </h2>
+    <button id="refresh-lwn" class="bg-blue-600 hover:bg-blue-500 mb-4 px-4 py-2 rounded-md text-white transition-all duration-200 ease-in-out skeumorphic-button">
+      به‌روزرسانی اخبار LWN
+    </button>
     <div id="lwn-container" class="gap-6 grid grid-cols-1 md:grid-cols-2"></div>
   </section>
 
   <section id="linuxjournal" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
-    <h2 class="mb-6 font-bold text-cyan-400 text-2xl embossed-text">اخبار لینوکس ژورنال</h2>
-    <button id="refresh-linuxjournal" class="bg-cyan-600 hover:bg-cyan-500 mb-4 px-4 py-2 rounded text-white transition btn btn-primary skeumorphic-button">به‌روزرسانی اخبار لینوکس ژورنال</button>
+    <h2 class="flex items-center gap-2 mb-6 font-bold text-blue-400 text-2xl embossed-text">
+      <img src="Sea/apps/scalable/gedit.svg" width="28" height="28" alt="اخبار لینوکس ژورنال" class="theme-icon">
+      اخبار لینوکس ژورنال
+    </h2>
+    <button id="refresh-linuxjournal" class="bg-blue-600 hover:bg-blue-500 mb-4 px-4 py-2 rounded-md text-white transition-all duration-200 ease-in-out btn btn-primary skeumorphic-button">
+      به‌روزرسانی اخبار لینوکس ژورنال
+    </button>
     <div id="linuxjournal-container" class="gap-6 grid grid-cols-1 md:grid-cols-2"></div>
   </section>
 
   <section id="reviews" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
-    <h2 class="mb-6 font-bold text-cyan-400 text-2xl embossed-text">نقد و بررسی</h2>
-    <button id="refresh-reviews" class="bg-cyan-600 hover:bg-cyan-500 mb-4 px-4 py-2 rounded text-white transition btn btn-primary skeumorphic-button">به‌روزرسانی نقد و بررسی</button>
+    <h2 class="flex items-center gap-2 mb-6 font-bold text-blue-400 text-2xl embossed-text">
+      <img src="Sea/apps/scalable/evince.svg" width="28" height="28" alt="نقد و بررسی" class="theme-icon">
+      نقد و بررسی
+    </h2>
+    <button id="refresh-reviews" class="bg-blue-600 hover:bg-blue-500 mb-4 px-4 py-2 rounded-md text-white transition-all duration-200 ease-in-out btn btn-primary skeumorphic-button">
+      به‌روزرسانی نقد و بررسی
+    </button>
     <div id="reviews-container" class="gap-6 grid grid-cols-1 md:grid-cols-2"></div>
   </section>
 
   <section id="bsd" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
-    <h2 class="mb-6 font-bold text-cyan-400 text-2xl embossed-text">سیستم‌های BSD</h2>
-    <button id="refresh-bsd" class="bg-cyan-600 hover:bg-cyan-500 mb-4 px-4 py-2 rounded text-white transition btn btn-primary skeumorphic-button">به‌روزرسانی BSD</button>
+    <h2 class="flex items-center gap-2 mb-6 font-bold text-blue-400 text-2xl embossed-text">
+      <img src="img/bsd.png" width="28" height="28" alt="سیستم‌های BSD" class="theme-icon">
+      سیستم‌های BSD
+    </h2>
+    <button id="refresh-bsd" class="bg-blue-600 hover:bg-blue-500 mb-4 px-4 py-2 rounded-md text-white transition-all duration-200 ease-in-out btn btn-primary skeumorphic-button">
+      به‌روزرسانی BSD
+    </button>
     <div id="bsd-container" class="gap-6 grid grid-cols-1 md:grid-cols-2"></div>
   </section>
 
   <section id="repos" class="mx-auto mt-10 max-w-6xl skeumorphic-section">
-    <h2 class="mb-6 font-bold text-cyan-400 text-2xl embossed-text">مخازن محبوب گیت‌هاب</h2>
+    <h2 class="flex items-center gap-2 mb-6 font-bold text-blue-400 text-2xl embossed-text">
+      <img src="Sea/apps/scalable/dolphin.svg" width="28" height="28" alt="مخازن" class="theme-icon">
+      مخازن محبوب گیت‌هاب
+    </h2>
     <a class="bg-secondary text-light" href="https://charlex.ir"> CharleX WebOS</a>
-    <button id="refresh-repos" class="bg-cyan-600 hover:bg-cyan-500 mb-4 px-4 py-2 rounded text-white transition btn btn-primary skeumorphic-button">به‌روزرسانی مخازن</button>
+    <button id="refresh-repos" class="bg-blue-600 hover:bg-blue-500 mb-4 px-4 py-2 rounded-md text-white transition-all duration-200 ease-in-out btn btn-primary skeumorphic-button">
+      به‌روزرسانی مخازن
+    </button>
     <div id="repos-container" class="gap-6 grid grid-cols-1 md:grid-cols-2"></div>
   </section>
 </main>
 
-<footer class="bg-gradient-to-r from-black via-gray-800 to-black shadow-2xl backdrop-blur-sm mt-10 p-4 border-gray-600 border-t text-cyan-500 text-center">
-  <small class="drop-shadow-md text-info hover:scale-105 transition-transform duration-300 transform">© 2024-2025 Unixism.ir | UI BY 
+<footer class="flex justify-center items-center gap-2 bg-gradient-to-r from-black via-gray-800 to-black shadow-2xl backdrop-blur-sm mt-10 p-4 border-gray-600 border-t text-cyan-500 text-center">
+  <img src="Sea/apps/scalable/gnome-terminal.svg" width="16" height="16" alt="UI" class="theme-icon">
+  <small class="drop-shadow-md text-info hover:scale-105 transition-transform duration-300 transform">© 2024-2025 Unixism.ir | CEO: Saeid MirSadeghi | UI BY
     <span class="bg-dark text-pr">AMZY31</span></small>
 </footer>
 
@@ -170,7 +195,7 @@
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/main.js"></script>
+<script src="js/main.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.10.2/dist/cdn.min.js" defer></script>
 </body>
 </html>
