@@ -117,7 +117,6 @@ renderCard = (container, rank, name, hits) => {
     <div class="background-glow"></div>
 
     <div class="content-container">
-      <img class=" card card-link " src="Sea/mimetypes/scalable/application-x-trash.svg" alt="Distro Icon" class="w-8 h-8 mb-2 mx-auto opacity-80">
       <div class="flex justify-between items-center mb-4">
         <span class="text-cyan-400 font-bold text-lg">#${rank}</span>
         <h3 class="text-xl font-semibold text-cyan-300 flex-1 text-center mx-4">${name}</h3>
@@ -135,7 +134,7 @@ const processDistros = (doc, container) => {
   console.log('Distros rows found:', rows.length);
   let cardCount = 0;
   rows.forEach((row, index) => {
-    if (index === 0) return; // Skip header row
+    if (index === 1) return; // Skip header row
     if (cardCount >= 20) return; // Limit to 200 for performance
     const cols = row.querySelectorAll("td, th"); // Include th for potential header-like rows
     if (cols.length >= 3) {
@@ -430,7 +429,7 @@ const handleHashChange = () => {
   const hash = window.location.hash || '#distros';
   const sections = document.querySelectorAll('main > section');
   sections.forEach(section => {
-    section.style.display = section.id === hash.substring(1) ? 'block' : 'none';
+    section.style.display = section.id === hash.substring(2) ? 'block' : 'none';
   });
 
   // Update navigation active state
