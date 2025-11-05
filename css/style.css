@@ -328,13 +328,6 @@ main > section.active {
   }
 }
 
-/* Remove cyberpunk effects */
-@keyframes glitch,
-@keyframes scan,
-@keyframes borderRotate,
-@keyframes glowPulse {
-  /* No content - removed */
-}
 
 /* Modern scrollbar */
 ::-webkit-scrollbar {
