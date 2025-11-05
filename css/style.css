@@ -265,8 +265,9 @@ main > section {
   display: none;
 }
 
-main > section#distros {
-  display: block;
+/* Ensure sections are visible when active */
+main > section.active {
+  display: block !important;
 }
 
 /* Modern responsive design */
@@ -509,3 +510,5 @@ main > section#distros {
 
   main {
     padding: 0.75rem;
+  }
+}

@@ -91,8 +91,8 @@ async function fetchData(originalUrl, containerId, loadingMessage, errorMessage,
     console.error("Fetch Error:", err);
     if (containerId === 'distros-container') {
       container.innerHTML = originalDistros;
-    } else if (containerId === 'weekly-container') {
-      container.innerHTML = originalWeekly;
+    } else if (containerId === 'ubuntu-news-container') {
+      container.innerHTML = originalUbuntuNews;
     } else {
       container.innerHTML = `<p class="text-red-500">${errorMessage}: ${err.message}. لطفاً اتصال اینترنت خود را بررسی کنید یا صفحه را دوباره بارگذاری کنید.</p>`;
     }
@@ -134,7 +134,7 @@ const processDistros = (doc, container) => {
   console.log('Distros rows found:', rows.length);
   let cardCount = 0;
   rows.forEach((row, index) => {
-    if (index === 1) return; // Skip header row
+    if (index === 3) return; // Skip header row
     if (cardCount >= 20) return; // Limit to 200 for performance
     const cols = row.querySelectorAll("td, th"); // Include th for potential header-like rows
     if (cols.length >= 3) {
@@ -143,11 +143,11 @@ const processDistros = (doc, container) => {
       const nameElement = cols[1].querySelector('a');
       const name = nameElement ? nameElement.textContent.trim() : cols[1].textContent.trim();
       const hitsText = cols[2].textContent.trim();
-      const hits = parseInt(hitsText.replace(/[^\d]/g, '')) || 0;
+      const hits = parseInt(hitsText.replace(/[^\d]/g, '')) || 1;
       console.log(`Processing row ${index} (rank ${rank}): name="${name}", hits="${hits}"`);
-      // Skip invalid rows: empty name, hits=0, hits=Infinity, or non-distro names
-      if (name && name.length > 0 && hits > 0 && isFinite(hits) && !name.includes('Search') && !name.includes('DistroWatch Page Hit Ranking') && !name.includes('Page Hit Ranking Trends') && !name.includes('Last 12 months') && !name.includes('Trends') && name.length > 3 && name.match(/^[A-Z]/)) {
-        renderCard(container, cardCount + 1, name, hits); // Start rank from 1
+      // Skip invalid rows: empty name, hits=0, hits=Infinity, or non-distro names, invalid rank
+      if (name && name.length > 1 && hits > 1 && isFinite(hits) && isFinite(rank) && rank > 0 && !name.includes('Search') && !name.includes('DistroWatch Page Hit Ranking') && !name.includes('Page Hit Ranking Trends') && !name.includes('Last 12 months') && !name.includes('Trends') && name.length > 3 && name.match(/^[A-Z]/)) {
+        renderCard(container, rank, name, hits);
         cardCount++;
       }
     }
@@ -183,11 +183,6 @@ async function translateText( text, targetLang = 'fa') {
 
 // Function to render news card
 function renderNewsCard(container, title, date, summary, link) {
-if (rank ===1) {
-    rank = '?';
-    text
-}
-
   const card = document.createElement("div");
   card.className = "card-container";
   card.innerHTML = `
@@ -216,16 +211,31 @@ if (rank ===1) {
 
 // Process news RSS data (XML parsing)
 async function processNews(doc, container) {
-  const items = doc.querySelectorAll('item');
-  console.log('RSS items found:', items.length);
+  let items = doc.querySelectorAll('item'); // RSS
+  let isAtom = false;
+  if (items.length === 0) {
+    items = doc.querySelectorAll('entry'); // Atom
+    isAtom = true;
+    console.log('Atom entries found:', items.length);
+  } else {
+    console.log('RSS items found:', items.length);
+  }
   container.innerHTML = '';
   let cardCount = 0;
   for (const item of items) {
     try {
-      const titleEl = item.querySelector('title');
-      const dateEl = item.querySelector('pubDate');
-      const descEl = item.querySelector('description');
-      const linkEl = item.querySelector('link');
+      let titleEl, dateEl, descEl, linkEl;
+      if (isAtom) {
+        titleEl = item.querySelector('title');
+        dateEl = item.querySelector('updated') || item.querySelector('published');
+        descEl = item.querySelector('summary') || item.querySelector('content');
+        linkEl = item.querySelector('link[rel="alternate"]');
+      } else {
+        titleEl = item.querySelector('title');
+        dateEl = item.querySelector('pubDate');
+        descEl = item.querySelector('description');
+        linkEl = item.querySelector('link');
+      }
       const title = titleEl ? titleEl.textContent.trim() : '';
       const date = dateEl ? dateEl.textContent.trim() : new Date().toLocaleDateString('fa-IR');
       let description = descEl ? descEl.textContent.trim() : '';
@@ -233,9 +243,16 @@ async function processNews(doc, container) {
         description = description.replace(/<[^>]*>/g, ''); // Strip HTML
       }
       const summary = description ? description.substring(0, 150) + '...' : 'خلاصه‌ای در دسترس نیست.';
-      const link = linkEl ? linkEl.textContent.trim() : '#';
+      let link = '#';
+      if (isAtom && linkEl) {
+        link = linkEl.getAttribute('href') || '#';
+      } else if (linkEl) {
+        link = linkEl.textContent.trim();
+      }
       if (title && link !== '#') {
-        renderNewsCard(container, title, date, summary, link);
+        const translatedTitle = await translateToPersian(title);
+        const translatedSummary = await translateToPersian(summary);
+        renderNewsCard(container, translatedTitle, date, translatedSummary, link);
         cardCount++;
         if (cardCount >= 10) break; // Limit to 10 news
       }
@@ -429,7 +446,11 @@ const handleHashChange = () => {
   const hash = window.location.hash || '#distros';
   const sections = document.querySelectorAll('main > section');
   sections.forEach(section => {
-    section.style.display = section.id === hash.substring(2) ? 'block' : 'none';
+    if (section.id === hash.substring(1)) {
+      section.classList.add('active');
+    } else {
+      section.classList.remove('active');
+    }
   });
 
   // Update navigation active state
@@ -759,19 +780,17 @@ async function processLinuxJournal(doc, container) {
 }
 
 let originalDistros = '';
-let originalWeekly = '';
+let originalUbuntuNews = '';
 
 // Fetch data on page load
 document.addEventListener('DOMContentLoaded', async () => {
   originalDistros = document.getElementById('distros-container').innerHTML;
-  originalWeekly = document.getElementById('weekly-container').innerHTML;
+  originalUbuntuNews = document.getElementById('ubuntu-news-container').innerHTML;
 
   const fetches = [
     fetchData('https://distrowatch.com/dwres.php?resource=popularity', 'distros-container', 'در حال بارگذاری توزیع‌ها...', 'خطا در دریافت داده‌ها', processDistros),
-    fetchData('https://distrowatch.com/dwres.php?resource=popularity&sort=week', 'weekly-container', 'در حال بارگذاری رتبه‌بندی هفتگی...', 'خطا در دریافت رتبه‌بندی هفتگی', processWeekly),
-    fetchData('https://www.linux.com/feed', 'news-container', 'در حال بارگذاری اخبار...', 'خطا در دریافت اخبار', processNews, "text/xml"),
+    fetchData('https://ubuntu.com/blog/feed', 'ubuntu-news-container', 'در حال بارگذاری اخبار اوبونتو...', 'خطا در دریافت اخبار اوبونتو', processNews, "text/xml"),
     fetchData('https://www.phoronix.com/rss.php', 'phoronix-container', 'در حال بارگذاری اخبار فنی...', 'خطا در دریافت اخبار فنی', processPhoronix, "text/xml"),
-    fetchData('https://www.reddit.com/r/linux/.rss', 'linuxcom-container', 'در حال بارگذاری اخبار عمومی...', 'خطا در دریافت اخبار عمومی', processLinuxCom, "text/xml"),
     fetchData('https://lwn.net/headlines/rss', 'lwn-container', 'در حال بارگذاری اخبار LWN...', 'خطا در دریافت اخبار LWN', processLWN, "text/xml"),
     fetchData('https://www.linuxjournal.com/node/feed', 'linuxjournal-container', 'در حال بارگذاری اخبار لینوکس ژورنال...', 'خطا در دریافت اخبار لینوکس ژورنال', processLinuxJournal, "text/xml"),
     fetchData('https://distrowatch.com/reviews/', 'reviews-container', 'در حال بارگذاری نقد و بررسی...', 'خطا در دریافت نقد و بررسی', processReviews),
@@ -779,9 +798,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     fetchData('https://api.github.com/search/repositories?q=linux&sort=stars&order=desc', 'repos-container', 'در حال بارگذاری مخازن...', 'خطا در دریافت مخازن', processRepos, "application/json")
   ];
 
-  for (const fetchPromise of fetches) {
-    await fetchPromise;
-  }
+  await Promise.all(fetches);
 
   handleHashChange();
 
@@ -789,34 +806,38 @@ document.addEventListener('DOMContentLoaded', async () => {
   setInterval(async () => {
     const updateFetches = [
       fetchData('https://distrowatch.com/dwres.php?resource=popularity', 'distros-container', 'در حال بارگذاری توزیع‌ها...', 'خطا در دریافت داده‌ها', processDistros),
-      fetchData('https://distrowatch.com/dwres.php?resource=popularity&sort=week', 'weekly-container', 'در حال بارگذاری رتبه‌بندی هفتگی...', 'خطا در دریافت رتبه‌بندی هفتگی', processWeekly),
-      fetchData('https://www.linux.com/feed', 'news-container', 'در حال بارگذاری اخبار...', 'خطا در دریافت اخبار', processNews, "text/xml"),
+      fetchData('https://ubuntu.com/blog/feed', 'ubuntu-news-container', 'در حال بارگذاری اخبار اوبونتو...', 'خطا در دریافت اخبار اوبونتو', processNews, "text/xml"),
       fetchData('https://www.phoronix.com/rss.php', 'phoronix-container', 'در حال بارگذاری اخبار فنی...', 'خطا در دریافت اخبار فنی', processPhoronix, "text/xml"),
       fetchData('https://distrowatch.com/reviews/', 'reviews-container', 'در حال بارگذاری نقد و بررسی...', 'خطا در دریافت نقد و بررسی', processReviews),
       fetchData('https://api.github.com/search/repositories?q=bsd&sort=stars&order=desc', 'bsd-container', 'در حال بارگذاری سیستم‌های BSD...', 'خطا در دریافت BSD', processBsd, "application/json"),
       fetchData('https://api.github.com/search/repositories?q=linux&sort=stars&order=desc', 'repos-container', 'در حال بارگذاری مخازن...', 'خطا در دریافت مخازن', processRepos, "application/json")
     ];
 
-    for (const fetchPromise of updateFetches) {
-      await fetchPromise;
-    }
+    await Promise.all(updateFetches);
   }, 300000);
+
+  // Handle hash changes for SPA navigation
+  window.addEventListener('hashchange', handleHashChange);
+
+  // Close navbar collapse on nav link click for better mobile SPA experience
+  document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+    link.addEventListener('click', () => {
+      const navbarCollapse = document.querySelector('.navbar-collapse');
+      if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+        const bsCollapse = new bootstrap.Collapse(navbarCollapse, { hide: true });
+        bsCollapse.hide();
+      }
+    });
+  });
+
+  // Refresh buttons
+  document.getElementById('refresh-distros').addEventListener('click', () => fetchData('https://distrowatch.com/dwres.php?resource=popularity', 'distros-container', 'در حال بارگذاری توزیع‌ها...', 'خطا در دریافت داده‌ها', processDistros));
+  document.getElementById('refresh-ubuntu-news').addEventListener('click', () => fetchData('https://ubuntu.com/blog/feed', 'ubuntu-news-container', 'در حال بارگذاری اخبار اوبونتو...', 'خطا در دریافت اخبار اوبونتو', processNews, "text/xml"));
+  document.getElementById('refresh-phoronix').addEventListener('click', () => fetchData('https://www.phoronix.com/rss.php', 'phoronix-container', 'در حال بارگذاری اخبار فنی...', 'خطا در دریافت اخبار فنی', processPhoronix, "text/xml"));
+  document.getElementById('refresh-lwn').addEventListener('click', () => fetchData('https://lwn.net/headlines/rss', 'lwn-container', 'در حال بارگذاری اخبار LWN...', 'خطا در دریافت اخبار LWN', processLWN, "text/xml"));
+  document.getElementById('refresh-linuxjournal').addEventListener('click', () => fetchData('https://www.linuxjournal.com/node/feed', 'linuxjournal-container', 'در حال بارگذاری اخبار لینوکس ژورنال...', 'خطا در دریافت اخبار لینوکس ژورنال', processLinuxJournal, "text/xml"));
+  document.getElementById('refresh-reviews').addEventListener('click', () => fetchData('https://distrowatch.com/reviews/', 'reviews-container', 'در حال بارگذاری نقد و بررسی...', 'خطا در دریافت نقد و بررسی', processReviews));
+  document.getElementById('refresh-bsd').addEventListener('click', () => fetchData('https://api.github.com/search/repositories?q=bsd&sort=stars&order=desc', 'bsd-container', 'در حال بارگذاری سیستم‌های BSD...', 'خطا در دریافت BSD', processBsd, "application/json"));
+  document.getElementById('refresh-repos').addEventListener('click', () => fetchData('https://api.github.com/search/repositories?q=linux&sort=stars&order=desc', 'repos-container', 'در حال بارگذاری مخازن...', 'خطا در دریافت مخازن', processRepos, "application/json"));
 });
-
-// Handle hash changes for SPA navigation
-window.addEventListener('hashchange', handleHashChange);
-
-// Refresh buttons
-document.getElementById('refresh-distros').addEventListener('click', () => fetchData('https://distrowatch.com/dwres.php?resource=popularity', 'distros-container', 'در حال بارگذاری توزیع‌ها...', 'خطا در دریافت داده‌ها', processDistros));
-document.getElementById('refresh-weekly').addEventListener('click', () => fetchData('https://distrowatch.com/dwres.php?resource=popularity&sort=week', 'weekly-container', 'در حال بارگذاری رتبه‌بندی هفتگی...', 'خطا در دریافت رتبه‌بندی هفتگی', processWeekly));
-document.getElementById('refresh-news').addEventListener('click', () => fetchData('https://www.linux.com/feed', 'news-container', 'در حال بارگذاری اخبار...', 'خطا در دریافت اخبار', processNews, "text/xml"));
-document.getElementById('refresh-phoronix').addEventListener('click', () => fetchData('https://www.phoronix.com/rss.php', 'phoronix-container', 'در حال بارگذاری اخبار فنی...', 'خطا در دریافت اخبار فنی', processPhoronix, "text/xml"));
-document.getElementById('refresh-linuxcom').addEventListener('click', () => fetchData('https://www.reddit.com/r/linux/.rss', 'linuxcom-container', 'در حال بارگذاری اخبار عمومی...', 'خطا در دریافت اخبار عمومی', processLinuxCom, "text/xml"));
-document.getElementById('refresh-lwn').addEventListener('click', () => fetchData('https://lwn.net/headlines/rss', 'lwn-container', 'در حال بارگذاری اخبار LWN...', 'خطا در دریافت اخبار LWN', processLWN, "text/xml"));
-document.getElementById('refresh-linuxjournal').addEventListener('click', () => fetchData('https://www.linuxjournal.com/node/feed', 'linuxjournal-container', 'در حال بارگذاری اخبار لینوکس ژورنال...', 'خطا در دریافت اخبار لینوکس ژورنال', processLinuxJournal, "text/xml"));
-document.getElementById('refresh-reviews').addEventListener('click', () => fetchData('https://distrowatch.com/reviews/', 'reviews-container', 'در حال بارگذاری نقد و بررسی...', 'خطا در دریافت نقد و بررسی', processReviews));
-document.getElementById('refresh-bsd').addEventListener('click', () => fetchData('https://api.github.com/search/repositories?q=bsd&sort=stars&order=desc', 'bsd-container', 'در حال بارگذاری سیستم‌های BSD...', 'خطا در دریافت BSD', processBsd, "application/json"));
-document.getElementById('refresh-repos').addEventListener('click', () => fetchData('https://api.github.com/search/repositories?q=linux&sort=stars&order=desc', 'repos-container', 'در حال بارگذاری مخازن...', 'خطا در دریافت مخازن', processRepos, "application/json"));
-
-// Dark mode toggle (removed as per user request)
 
