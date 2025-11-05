@@ -471,7 +471,7 @@ function renderWeeklyCard(container, rank, name, hits) {
       </div>
     </div>
   `;
-  container.appendChild(card);
+  container.appendChild(card[1]);
 }
 
 // Process weekly rankings data
